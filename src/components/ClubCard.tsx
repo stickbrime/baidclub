@@ -4,6 +4,7 @@ import { trpc } from "@/providers/trpc";
 import type { Club } from "@db/schema";
 import AnnouncementBoard from "@/components/AnnouncementBoard";
 import { Pencil, Trash2, X, QrCode, ImagePlus } from "lucide-react";
+import { assetUrl } from "@/lib/utils";
 
 const CATEGORIES = [
   "艺术与设计类",
@@ -83,7 +84,7 @@ export default function ClubCard({ club, adminMode }: { club: Club; adminMode: b
       {/* 海报区域 */}
       <div className="relative aspect-[4/3] bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center group">
         {club.poster ? (
-          <img src={club.poster} alt={club.name} className="absolute inset-0 w-full h-full object-cover" />
+          <img src={assetUrl(club.poster)} alt={club.name} className="absolute inset-0 w-full h-full object-cover" />
         ) : (
           <div className={`text-white/80 text-center ${adminMode ? "cursor-pointer hover:text-white" : ""}`}>
             <div className="text-3xl mb-1">＋</div>
@@ -135,7 +136,7 @@ export default function ClubCard({ club, adminMode }: { club: Club; adminMode: b
               <input ref={qrRef} type="file" accept="image/*" className="hidden" onChange={onQrChange} />
               <div className="relative group/qr">
                 {club.qr ? (
-                  <img src={club.qr} alt="招新群二维码" className="w-10 h-10 rounded border border-slate-200" />
+                  <img src={assetUrl(club.qr)} alt="招新群二维码" className="w-10 h-10 rounded border border-slate-200" />
                 ) : (
                   <div className="w-10 h-10 rounded border border-dashed border-slate-300 flex items-center justify-center text-slate-300">
                     <QrCode size={16} />
@@ -165,7 +166,7 @@ export default function ClubCard({ club, adminMode }: { club: Club; adminMode: b
           {!adminMode && (
             <>
               {club.qr ? (
-                <img src={club.qr} alt="招新群二维码" className="w-10 h-10 rounded border border-slate-200" />
+                <img src={assetUrl(club.qr)} alt="招新群二维码" className="w-10 h-10 rounded border border-slate-200" />
               ) : (
                 <div className="w-10 h-10 rounded border border-dashed border-slate-300 flex items-center justify-center text-slate-300">
                   <QrCode size={16} />
