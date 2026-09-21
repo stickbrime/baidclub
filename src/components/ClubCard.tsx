@@ -86,7 +86,10 @@ export default function ClubCard({ club, adminMode }: { club: Club; adminMode: b
         {club.poster ? (
           <img src={assetUrl(club.poster)} alt={club.name} className="absolute inset-0 w-full h-full object-cover" />
         ) : (
-          <div className={`text-white/80 text-center ${adminMode ? "cursor-pointer hover:text-white" : ""}`}>
+          <div
+            className={`text-white/80 text-center ${adminMode ? "cursor-pointer hover:text-white" : ""}`}
+            onClick={adminMode ? () => posterRef.current?.click() : undefined}
+          >
             <div className="text-3xl mb-1">＋</div>
             <div className="text-sm">待添加海报</div>
           </div>
@@ -134,15 +137,18 @@ export default function ClubCard({ club, adminMode }: { club: Club; adminMode: b
           {adminMode && (
             <>
               <input ref={qrRef} type="file" accept="image/*" className="hidden" onChange={onQrChange} />
-              <div className="relative group/qr">
+              <div
+                className="relative group/qr cursor-pointer"
+                onClick={() => qrRef.current?.click()}
+              >
                 {club.qr ? (
                   <img src={assetUrl(club.qr)} alt="招新群二维码" className="w-10 h-10 rounded border border-slate-200" />
                 ) : (
-                  <div className="w-10 h-10 rounded border border-dashed border-slate-300 flex items-center justify-center text-slate-300">
+                  <div className="w-10 h-10 rounded border border-dashed border-slate-300 flex items-center justify-center text-slate-300 hover:border-indigo-400 hover:text-indigo-400 transition-colors">
                     <QrCode size={16} />
                   </div>
                 )}
-                <div className="absolute inset-0 flex items-center justify-center gap-1 opacity-0 group-hover/qr:opacity-100 transition-opacity">
+                <div className="absolute inset-0 flex items-center justify-center gap-1 opacity-0 group-hover/qr:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
                   <button
                     onClick={() => qrRef.current?.click()}
                     className="w-5 h-5 rounded bg-white/90 text-slate-700 flex items-center justify-center hover:bg-white"
