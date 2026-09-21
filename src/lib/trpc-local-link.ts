@@ -1,5 +1,4 @@
 import type { TRPCLink } from "@trpc/client";
-import { observable } from "@trpc/server/observable";
 import { TRPCClientError } from "@trpc/client";
 import type { AnyRouter } from "@trpc/server";
 import {
@@ -16,10 +15,40 @@ import {
   deleteAnnouncement,
 } from "./local-store";
 
+// Minimal observable implementation that's compatible with tRPC client
+// (avoids importing @trpc/server/observable which is a server-side package)
+type Observer<T> = {
+  next: (value: T) => void;
+  error: (err: unknown) => void;
+  complete: () => void;
+};
+
+function createObservable<T>(fn: (observer: Observer<T>) => void | (() => void)) {
+  return {
+    subscribe(observer: Partial<Observer<T>>) {
+      const next = (v: T) => observer.next?.(v);
+      const error = (e: unknown) => observer.error?.(e);
+      const complete = () => observer.complete?.();
+      let unsub: (() => void) | void;
+      try {
+        unsub = fn({ next, error, complete });
+      } catch (err) {
+        error(err);
+        return { unsubscribe: () => {} };
+      }
+      return {
+        unsubscribe: () => {
+          unsub?.();
+        },
+      };
+    },
+  };
+}
+
 export function localLink<TRouter extends AnyRouter>(): TRPCLink<TRouter> {
   return () =>
     ({ op }) =>
-      observable((observer) => {
+      createObservable((observer) => {
         try {
           const { path, input, type } = op;
           let result: unknown;
@@ -96,10 +125,10 @@ export function localLink<TRouter extends AnyRouter>(): TRPCLink<TRouter> {
               throw new Error(`Unknown procedure: ${path}`);
           }
 
-          observer.next({ result: { data: result, type } } as any);
+          observer.next({ result: { data: result } } as any);
           observer.complete();
         } catch (err) {
           observer.error(TRPCClientError.from(err as Error));
         }
-      });
+      }) as any;
 }
