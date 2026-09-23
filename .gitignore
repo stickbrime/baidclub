@@ -39,3 +39,6 @@ build/
 # Test coverage
 coverage/
 .nyc_output/
+# Build artifacts (should never be committed into web/)
+web/boot.js
+web/public/assets/
