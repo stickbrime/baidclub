@@ -29,4 +29,4 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    command: sh -c "npm ci --legacy-peer-deps && npx drizzle-kit push && npx tsx db/seed.ts && npm run dev -- --host"
+    command: sh -c "npm ci --legacy-peer-deps && npx drizzle-kit push --config server/drizzle.config.ts && npx tsx server/db/seed.ts && npm run dev -- --host"

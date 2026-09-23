@@ -7,11 +7,12 @@ import { defineConfig } from "vite"
 // https://vite.dev/config/
 export default defineConfig(({ command }) => ({
   base: './',
+  root: path.resolve(__dirname, "web"),
   plugins: [
     // Only include dev-only plugins in serve mode (dev server)
     ...(command === 'serve'
       ? [
-          devServer({ entry: "api/boot.ts", exclude: [/^\/(?!api\/).*$/] }),
+          devServer({ entry: path.resolve(__dirname, "server/api/boot.ts"), exclude: [/^\/(?!api\/).*$/] }),
         ]
       : []),
     react(),
@@ -21,10 +22,10 @@ export default defineConfig(({ command }) => ({
   },
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
-      "@contracts": path.resolve(__dirname, "./contracts"),
-      "@db": path.resolve(__dirname, "./db"),
-      "db": path.resolve(__dirname, "./db"),
+      "@": path.resolve(__dirname, "./web/src"),
+      "@contracts": path.resolve(__dirname, "./server/contracts"),
+      "@db": path.resolve(__dirname, "./server/db"),
+      "db": path.resolve(__dirname, "./server/db"),
     },
   },
   envDir: path.resolve(__dirname),

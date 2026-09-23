@@ -50,7 +50,7 @@ export function localLink<TRouter extends AnyRouter>(): TRPCLink<TRouter> {
     ({ op }) =>
       createObservable((observer) => {
         try {
-          const { path, input, type } = op;
+          const { path, input } = op;
           let result: unknown;
 
           switch (path) {
